@@ -1,17 +1,40 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ProvideActivities } from '@/hooks/useActivities';
+import { ProvideAuth } from '@/hooks/useAuth';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { ProvideRecords } from '@/hooks/useRecords';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import {
+  PaperProvider,
+  MD3DarkTheme as DarkTheme,
+  MD3LightTheme as DefaultTheme,
+} from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as SplashScreen from 'expo-splash-screen';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+import "react-native-reanimated"
+
+const lightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#018786',
+  },
+};
+
+const darkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: '#00B1B7',
+  },
+};
+
+export default function RootLayout() {  
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -25,13 +48,20 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <ProvideAuth>
+      <ProvideActivities>
+        <ProvideRecords>
+          <SafeAreaProvider>
+            <PaperProvider theme={theme}>
+              <Stack screenOptions={{ headerShown: false }} />
+            </PaperProvider>
+          </SafeAreaProvider>
+        </ProvideRecords>
+      </ProvideActivities>
+    </ProvideAuth>
   );
 }

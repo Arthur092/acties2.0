@@ -7,7 +7,6 @@ import Logo from '@/components/Authentication/Logo';
 import Button from '@/components/Authentication/Button';
 import { useRouter } from 'expo-router';
 import { Text } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
 
 export default function StartScreen() {
   const router = useRouter();

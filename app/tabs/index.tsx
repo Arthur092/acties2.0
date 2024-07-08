@@ -20,7 +20,7 @@ export default function NewActivityScreen(){
     getRecords();
   },[]);
   
-  if (activityTypes.isLoading) <ActivitySpinner />
+  if (activityTypes.isLoading) return <ActivitySpinner />
 
   const showDialog = (value: boolean, activity: ActivityType | null = null) => {
     if(value){

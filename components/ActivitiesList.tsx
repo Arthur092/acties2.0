@@ -31,7 +31,7 @@ export const ActivitiesList = ({
   showDialog,
   icon,
 }: Props) => {
-  const backgroundItem = useThemeColor({}, 'backgroundItem');
+  const backgroundItem = useThemeColor({}, 'backgroundItem');    
   const divider = useThemeColor({}, 'divider');
   const activityTypesWithDates = activityTypes.filter(at => at.addedAt);
   const activityTypesWithoutDates = activityTypes.filter(at => !at.addedAt);
@@ -48,7 +48,7 @@ export const ActivitiesList = ({
           .concat(activityTypesWithDates)
           .map((activity, index) => (
             <View key={index}>
-              <Divider style={{ backgroundColor: divider }} />
+              <Divider style={{ backgroundColor: divider }}/>
               <List.Item
                 testID={`list-${index}`}
                 title={activity.name}
@@ -60,11 +60,11 @@ export const ActivitiesList = ({
                 )}
                 right={() => <List.Icon icon={icon} />}
                 onPress={() => showDialog(true, activity)}
-                style={{ backgroundColor: backgroundItem }}
+                style={{ backgroundColor: backgroundItem }} 
               />
             </View>
           ))}
-        <Divider />
+        <Divider style={{ backgroundColor: divider }} />
       </List.Section>
       <Snackbar
         visible={snackBar.visible}

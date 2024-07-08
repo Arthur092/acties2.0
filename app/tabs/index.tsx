@@ -1,18 +1,25 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivitiesList } from '@/components/ActivitiesList';
 import { RecordDialog } from '@/components/RecordDialog';
 import { ActivityType } from "@/constants/Types";
 import { useActivities } from '@/hooks/useActivities';
 import { ActivityIndicator } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
+import { useRecords } from '@/hooks/useRecords';
 
 export default function NewActivityScreen(){
-  const { activityTypes } = useActivities();  
+  const { activityTypes, getActivityTypes } = useActivities();  
+  const { getRecords } = useRecords();
   const [isDialogVisile, setIsDialogVisile] = useState(false);
   const [currentActivity, setCurrentActivity] = useState<ActivityType | null>(null);
   const [snackBar, setSnackBar] = useState({visible: false, message: '', error: false});
 
+  useEffect(() => {
+    getActivityTypes();
+    getRecords();
+  },[]);
+  
   if (activityTypes.isLoading) <ActivitySpinner />
 
   const showDialog = (value: boolean, activity: ActivityType | null = null) => {

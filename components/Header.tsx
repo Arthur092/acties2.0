@@ -1,6 +1,5 @@
 import React from 'react';
 import { Appbar, Menu } from 'react-native-paper';
-// import { getHeaderTitle } from '@react-navigation/elements';
 import { Pressable, View } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
@@ -8,7 +7,7 @@ import { TabBarIcon } from './navigation/TabBarIcon';
 
 export const Header = () => {
   const { signout, user } = useAuth();
-  // const router = useRouter();
+  const router = useRouter();
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -16,6 +15,7 @@ export const Header = () => {
   const signOut = async () => {
     try {
       await signout();
+      router.navigate('/');
     } catch (error) {
       console.log('error', error);
     }
@@ -46,7 +46,7 @@ export const Header = () => {
           <Menu.Item icon='logout' onPress={signOut} title='Sign out' />
         </Menu>
       </View>
-      <Appbar.Content title='test' />
+      <Appbar.Content title="Test" />
       <Pressable
         onPress={signOut}
         style={({ pressed }) => ({

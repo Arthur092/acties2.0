@@ -17,10 +17,10 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: Colors[colorScheme ?? 'light'].background,
         },
-        header: () => <Header />,        
+        header: () => <Header />,       
       }}
       sceneContainerStyle = {{
-        backgroundColor: Colors[colorScheme ?? 'light'].background
+        backgroundColor: Colors[colorScheme ?? 'light'].background,        
       }}
     >
       <Tabs.Screen

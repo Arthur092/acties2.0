@@ -1,88 +1,96 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Snackbar, Text, useTheme } from 'react-native-paper'
-import Background from '@/components/Authentication/Background'
-import Button from '@/components/Authentication/Button'
-import Header from '@/components/Authentication/Header'
-import Logo from '@/components/Authentication/Logo'
-import TextInput from '@/components/Authentication/TextInput'
-import { theme } from '@/core/theme'
-import { useAuth } from '@/hooks/useAuth'
-import { emailValidator, passwordValidator } from '@/helpers/validators'
-import { createInitialActivities } from '@/helpers/dataCreators'
-import { useRouter } from 'expo-router'
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Snackbar, Text, useTheme } from 'react-native-paper';
+import { Text as RnText } from 'react-native';
+import Background from '@/components/Authentication/Background';
+import Button from '@/components/Authentication/Button';
+import Header from '@/components/Authentication/Header';
+import Logo from '@/components/Authentication/Logo';
+import TextInput from '@/components/Authentication/TextInput';
+import { theme } from '@/core/theme';
+import { useAuth } from '@/hooks/useAuth';
+import { emailValidator, passwordValidator } from '@/helpers/validators';
+import { createInitialActivities } from '@/helpers/dataCreators';
+import { useRouter } from 'expo-router';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function RegisterScreen() {
   const { colors } = useTheme();
   const router = useRouter();
-  const [email, setEmail] = useState({ value: '', error: '' })
-  const [password, setPassword] = useState({ value: '', error: '' })
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
   const { signup, setUser } = useAuth();
   const [isSnackBar, setIsSnackBar] = useState(false);
 
   const onSignUpPressed = async () => {
-    const emailError = emailValidator(email.value)
-    const passwordError = passwordValidator(password.value)
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
     if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError })
-      setPassword({ ...password, error: passwordError })
-      return
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      return;
     }
     try {
       const newUserData = await signup(email.value, password.value);
       await createInitialActivities(newUserData.user);
-      setUser(newUserData.user)
+      setUser(newUserData.user);
     } catch (error) {
-      setIsSnackBar(true)
-      console.log("error", error);
+      setIsSnackBar(true);
+      console.log('error', error);
     }
-  }
+  };
 
   return (
     <Background>
       <Logo />
       <Header>Create Account</Header>
       <TextInput
-        label="Email"
-        returnKeyType="next"
+        label='Email'
+        returnKeyType='next'
         value={email.value}
         onChangeText={(text: any) => setEmail({ value: text, error: '' })}
         error={!!email.error}
         errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address" description={undefined}      />
+        autoCapitalize='none'
+        autoCompleteType='email'
+        textContentType='emailAddress'
+        keyboardType='email-address'
+        description={undefined}
+      />
       <TextInput
-        label="Password"
-        returnKeyType="done"
+        label='Password'
+        returnKeyType='done'
         value={password.value}
         onChangeText={(text: any) => setPassword({ value: text, error: '' })}
         error={!!password.error}
         errorText={password.error}
-        secureTextEntry description={undefined}      />
+        secureTextEntry
+        description={undefined}
+      />
       <Button
-        mode="contained"
+        mode='contained'
         onPress={onSignUpPressed}
         style={{ marginTop: 24 }}
       >
-        Sign Up
+        <RnText style={{ color: '#fff' }}>Sign Up</RnText>
       </Button>
       <View style={styles.row}>
         <Text>Already have an account? </Text>
-        <TouchableOpacity onPress={() => router.push('/authentication/login')}>
-          <Text style={{...styles.link, color: colors.primary}}>Login</Text>
+        <TouchableOpacity
+          onPress={() => router.replace('/authentication/login')}
+        >
+          <Text style={{ ...styles.link, color: colors.primary }}>Login</Text>
         </TouchableOpacity>
       </View>
       <Snackbar
         visible={isSnackBar}
         onDismiss={() => setIsSnackBar(false)}
         style={styles.snackBar}
-        >
-          An error has occured
+      >
+        An error has occured
       </Snackbar>
     </Background>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -94,6 +102,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   snackBar: {
-    backgroundColor: theme.colors.error
-  }
-})
+    backgroundColor: theme.colors.error,
+  },
+});

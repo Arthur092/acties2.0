@@ -6,7 +6,7 @@ import Header from '@/components/Authentication/Header';
 import Logo from '@/components/Authentication/Logo';
 import Button from '@/components/Authentication/Button';
 import { useRouter } from 'expo-router';
-import { Text } from 'react-native';
+import { StaticButton } from '@/components/Authentication/StaticButton';
 
 export default function StartScreen() {
   const router = useRouter();
@@ -15,13 +15,13 @@ export default function StartScreen() {
       <Logo />
       <Header>Welcome to Acties!</Header>
       <Paragraph>Please select an option to authenticate</Paragraph>
-      <Button
-        mode='contained'
+      <StaticButton
         onPress={() => router.push('/authentication/login')}
         style={undefined}
       >
-        <Text style={{color: '#fff'}}>Login</Text>
-      </Button>
+        Login
+      </StaticButton>
+      
       <Button
         mode='outlined'
         onPress={() => router.push('/authentication/signup')}

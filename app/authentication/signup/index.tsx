@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Snackbar, Text, useTheme } from 'react-native-paper';
-import { Text as RnText } from 'react-native';
 import Background from '@/components/Authentication/Background';
-import Button from '@/components/Authentication/Button';
 import Header from '@/components/Authentication/Header';
 import Logo from '@/components/Authentication/Logo';
 import TextInput from '@/components/Authentication/TextInput';
@@ -12,7 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { emailValidator, passwordValidator } from '@/helpers/validators';
 import { createInitialActivities } from '@/helpers/dataCreators';
 import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/ThemedText';
+import { StaticButton } from '@/components/Authentication/StaticButton';
 
 export default function RegisterScreen() {
   const { colors } = useTheme();
@@ -67,13 +65,10 @@ export default function RegisterScreen() {
         secureTextEntry
         description={undefined}
       />
-      <Button
-        mode='contained'
-        onPress={onSignUpPressed}
-        style={{ marginTop: 24 }}
-      >
-        <RnText style={{ color: '#fff' }}>Sign Up</RnText>
-      </Button>
+      <StaticButton onPress={onSignUpPressed} style={{ marginTop: 24 }}>
+        Sign Up
+      </StaticButton>
+
       <View style={styles.row}>
         <Text>Already have an account? </Text>
         <TouchableOpacity

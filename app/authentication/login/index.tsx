@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, ViewStyle, TextStyle } from 'react-native';
 
 import { Snackbar, Text } from 'react-native-paper';
-import { Text as RnText } from 'react-native';
 import Background from '@/components/Authentication/Background';
 import Logo from '@/components/Authentication/Logo';
 import Header from '@/components/Authentication/Header';
 import TextInput from '@/components/Authentication/TextInput';
-import Button from '@/components/Authentication/Button';
 import { theme } from '@/core/theme';
 import { useAuth } from '@/hooks/useAuth';
 import { emailValidator, passwordValidator } from '@/helpers/validators';
 import { useTheme } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+import { StaticButton } from '@/components/Authentication/StaticButton';
 
 export default function LoginScreen() {
   const { colors } = useTheme();
@@ -67,9 +66,9 @@ export default function LoginScreen() {
         secureTextEntry
         description={undefined}
       />
-      <Button mode='contained' onPress={onLoginPressed} style={undefined}>
-        <RnText style={{ color: '#fff' }}>Login</RnText>
-      </Button>
+      <StaticButton onPress={onLoginPressed} style={undefined}>
+        Login
+      </StaticButton>
       <View style={styles.row}>
         <Text> Don’t have an account? </Text>
         <TouchableOpacity

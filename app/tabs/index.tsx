@@ -4,20 +4,19 @@ import { ActivitiesList } from '@/components/ActivitiesList';
 import { RecordDialog } from '@/components/RecordDialog';
 import { ActivityType } from "@/constants/Types";
 import { useActivities } from '@/hooks/useActivities';
-import { ActivityIndicator } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
 import { useRecords } from '@/hooks/useRecords';
+import { ActivitySpinner } from '@/components/ActivitySpinner';
 
 export default function NewActivityScreen(){
   const { activityTypes, getActivityTypes } = useActivities();  
-  const { getRecords } = useRecords();
+  const { getLastRecords } = useRecords();
   const [isDialogVisile, setIsDialogVisile] = useState(false);
   const [currentActivity, setCurrentActivity] = useState<ActivityType | null>(null);
   const [snackBar, setSnackBar] = useState({visible: false, message: '', error: false});
 
   useEffect(() => {
-    getActivityTypes();
-    getRecords();
+    getActivityTypes(); 
+    getLastRecords();
   },[]);
   
   if (activityTypes.isLoading) return <ActivitySpinner />
@@ -50,17 +49,3 @@ export default function NewActivityScreen(){
     </>
   );
 }
-
-function ActivitySpinner() {
-  return <ActivityIndicator
-      animating={true}
-      size='large'
-      style={styles.spinner} />
-}
-
-const styles = StyleSheet.create({
-  spinner: {
-    justifyContent: 'center',
-    flex: 1,
-  }
-})

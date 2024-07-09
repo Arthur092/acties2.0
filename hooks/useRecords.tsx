@@ -1,13 +1,15 @@
 import { collection, getDoc, onSnapshot, query } from "firebase/firestore";
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { ActivityType, RecordType } from "../constants/Types";
-import { db, getRecordsByUser } from "../firebase";
+import { db, getLastRecordsByUser, getRecordsByUser } from "../firebase";
 import { getActivityWithId } from "../helpers/utils";
 import { useAuth } from "./useAuth";
 
 interface ContextValue {
     records: RecordsState;
+    lastRecords: RecordsState;
     getRecords: () => void;
+    getLastRecords: () => void;
 }
 
 export type RecordsState = {
@@ -20,7 +22,12 @@ export const RecordsContext = createContext<ContextValue>({
         data: [],
         isLoading: true
     },
+    lastRecords: {
+        data: [],
+        isLoading: true
+    },
     getRecords: () => null,
+    getLastRecords: () => null,
 });
 
 interface Props {
@@ -129,7 +136,13 @@ function useProvideRecords(): ContextValue {
             })
         }
     },[removedRecord])
+
     const [records, setRecords] = useState<RecordsState>({
+        data: [],
+        isLoading: true
+    });
+
+    const [lastRecords, setLastRecords] = useState<RecordsState>({
         data: [],
         isLoading: true
     });
@@ -147,9 +160,23 @@ function useProvideRecords(): ContextValue {
         }
     }
 
+    const getLastRecords = () => {
+        if (user) {
+            const { uid } = user;
+            return getLastRecordsByUser(uid).then(lastRecords => {
+                setLastRecords({
+                    data: lastRecords,
+                    isLoading: false
+                })
+            });
+        }
+    }
+
     return {
         records,
-        getRecords
+        getRecords,
+        lastRecords,
+        getLastRecords,
     }
 }
 

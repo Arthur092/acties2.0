@@ -46,7 +46,7 @@ export const Header = () => {
           <Menu.Item icon='logout' onPress={signOut} title='Sign out' />
         </Menu>
       </View>
-      <Appbar.Content title="Test" />
+      <Appbar.Content title="Test2" />
       <Pressable
         onPress={signOut}
         style={({ pressed }) => ({

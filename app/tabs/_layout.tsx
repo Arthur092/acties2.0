@@ -26,22 +26,22 @@ export default function TabLayout() {
       <Tabs.Screen
         name='index'
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
+          title: 'New Activity',
+          tabBarIcon: ({ color }) => (
             <TabBarIcon
-              name={focused ? 'home' : 'home-outline'}
+              name={'plus'}
               color={color}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name='explore'
+        name='last'
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
+          title: 'Historical',
+          tabBarIcon: ({ color }) => (
             <TabBarIcon
-              name={focused ? 'code-slash' : 'code-slash-outline'}
+              name={'chart-line'}
               color={color}
             />
           ),

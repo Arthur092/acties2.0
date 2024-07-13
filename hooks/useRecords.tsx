@@ -3,15 +3,15 @@ import { RecordType } from '../constants/Types';
 import {
   getLastRecordsByUser,
   getMonthlyRecordsByUser,
-  getRecordsByUser,
+  getRecordsByUserAndActivity,
 } from '../firebase';
 import { useAuth } from './useAuth';
 
 interface ContextValue {
-  records: RecordsState;
+  recordsByActivity: RecordsState;
   lastRecords: RecordsState;
   monthlyRecords: RecordsState;
-  getRecords: () => void;
+  getRecordsByActivity: (activityId: string) => void;
   getLastRecords: () => void;
   getMonthlyRecords: (
     activityId: string,
@@ -26,19 +26,19 @@ export type RecordsState = {
 };
 
 export const RecordsContext = createContext<ContextValue>({
-  records: {
+  recordsByActivity: {
     data: [],
-    isLoading: true,
+    isLoading: false,
   },
   lastRecords: {
     data: [],
-    isLoading: true,
+    isLoading: false,
   },
   monthlyRecords: {
     data: [],
-    isLoading: true,
+    isLoading: false,
   },
-  getRecords: () => null,
+  getRecordsByActivity: () => null,
   getLastRecords: () => null,
   getMonthlyRecords: () => null,
 });
@@ -150,31 +150,31 @@ function useProvideRecords(): ContextValue {
   //     }
   // },[removedRecord])
 
-  const [records, setRecords] = useState<RecordsState>({
+  const [recordsByActivity, setRecordsByActivity] = useState<RecordsState>({
     data: [],
-    isLoading: true,
+    isLoading: false,
   });
 
   const [lastRecords, setLastRecords] = useState<RecordsState>({
     data: [],
-    isLoading: true,
+    isLoading: false,
   });
 
   const [monthlyRecords, setMonthlyRecords] = useState<RecordsState>({
     data: [],
-    isLoading: true,
+    isLoading: false,
   });
 
-  const getRecords = () => {
-    setRecords({
-        data: [],
-        isLoading: true,
-      });
+  const getRecordsByActivity = (activityId: string) => {
+    setRecordsByActivity({
+      data: [],
+      isLoading: true,
+    });
     if (user) {
       const { uid } = user;
-      return getRecordsByUser(uid).then(records => {
-        setRecords({
-          data: records,
+      return getRecordsByUserAndActivity(uid, activityId).then(recordsByActivity => {
+        setRecordsByActivity({
+          data: recordsByActivity,
           isLoading: false,
         });
       });
@@ -183,9 +183,9 @@ function useProvideRecords(): ContextValue {
 
   const getLastRecords = () => {
     setLastRecords({
-        data: [],
-        isLoading: true,
-      });
+      data: [],
+      isLoading: true,
+    });
     if (user) {
       const { uid } = user;
       return getLastRecordsByUser(uid).then(lastRecords => {
@@ -220,10 +220,10 @@ function useProvideRecords(): ContextValue {
   };
 
   return {
-    records,
+    recordsByActivity,
     lastRecords,
     monthlyRecords,
-    getRecords,
+    getRecordsByActivity,
     getLastRecords,
     getMonthlyRecords,
   };

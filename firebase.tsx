@@ -46,6 +46,11 @@ export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 });
 
+// Get ActivityType by ID
+export const getActivityTypeById = (id: string) => {
+  return getDoc(doc(db, 'ActivityType', id));
+};
+
 // Create ActivityType
 export const createActivityType = (data: ActivityType) =>
   addDoc(collection(db, 'ActivityType'), data);
@@ -111,43 +116,44 @@ export const deleteRecord = (data: RecordType) => {
   return deleteDoc(doc(db, 'Record', data.id!));
 };
 
-// Get Records by user
-export const getRecordsByUser = async (userId: string) => {
-  const q = query(collection(db, 'Record'), where('userId', '==', userId));
-  const SnapshotRecords = await getDocs(q);
-  const newRecords: Array<any> = [];
-
-  SnapshotRecords.forEach(async doc => {
-    const { activityType, date, quantity, note } = doc.data();
-    newRecords.push({
+// Get Records by a specific user and activity
+export const getRecordsByUserAndActivity = async (userId: string, activityId: string) => {
+  const activityRef = doc(db, 'ActivityType', activityId);
+  const q = query(collection(db, 'Record'), where('userId', '==', userId), where('activityType', '==', activityRef));
+  const snapshotRecords = await getDocs(q);
+  const records = snapshotRecords.docs.map(doc => {
+    const { date, quantity, note } = doc.data();
+    return {
       id: doc.id,
-      activity: activityType,
+      activity: activityRef,
       date,
       quantity,
       note,
       userId,
-    });
-  });
-
-  const newRecordPromises = newRecords.map(async record => {
-    const fetchActivity = await getDoc(record.activity);
-    return {
-      ...record,
-      activity: getActivityWithId(fetchActivity),
     };
   });
 
-  return Promise.all(newRecordPromises);
+  // Since all records are for the same activity, fetch the activity details once
+  const fetchActivity = await getDoc(activityRef);
+  const activityDetails = getActivityWithId(fetchActivity);
+
+  // Attach the fetched activity details to each record
+  const newRecords = records.map(record => ({
+    ...record,
+    activity: activityDetails,
+  }));
+
+  return newRecords;
 };
 
 // Get Last Records by user
 export const getLastRecordsByUser = async (userId: string) => {
   const activityTypes = await getActivityTypesByUser(userId);
   const lastRecords: Array<any> = [];
-
-  for (const activityType of activityTypes) {
-    const activityTypeRef = doc(db, 'ActivityType', activityType.id!);
-    try {
+  const promises = [];
+  try {
+    for (const activityType of activityTypes) {
+      const activityTypeRef = doc(db, 'ActivityType', activityType.id!);
       const q = query(
         collection(db, 'Record'),
         where('userId', '==', userId),
@@ -155,23 +161,80 @@ export const getLastRecordsByUser = async (userId: string) => {
         orderBy('date', 'desc'),
         limit(1)
       );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(async doc => {
-        const { activityType, date, quantity, note } = doc.data();
-        const fetchedActivity = await getDoc(activityType);
-        lastRecords.push({
-          id: doc.id,
-          activity: getActivityWithId(fetchedActivity),
-          date,
-          quantity,
-          note,
-          userId,
-        });
-      });
-    } catch (error) {
-      console.log('\x1b[36m$$$  error:', error);
-    }
-  }
 
-  return lastRecords;
+      // Store the promise for the querySnapshot
+      const promise = getDocs(q).then(async querySnapshot => {
+        const docPromises: any[] = [];
+        querySnapshot.forEach(doc => {
+          const { activityType, date, quantity, note } = doc.data();
+          // Store each document's promise
+          const docPromise = getDoc(activityType).then(fetchedActivity => {
+            lastRecords.push({
+              id: doc.id,
+              activity: getActivityWithId(fetchedActivity),
+              date,
+              quantity,
+              note,
+              userId,
+            });
+          });
+          docPromises.push(docPromise);
+        });
+        // Wait for all document promises to resolve
+        return Promise.all(docPromises);
+      });
+      promises.push(promise);
+    }
+    // Wait for all promises to resolve
+    await Promise.all(promises);
+
+    return lastRecords;
+  } catch (error) {
+    console.log('\x1b[36m$$$  error:', error);
+  }
+};
+
+// get Monthly Records by User and ActivityType and range of dates
+export const getMonthlyRecordsByUser = async (
+  userId: string,
+  activityId: string,
+  startDate: Date,
+  endDate: Date
+) => {
+  const activityTypeRef = doc(db, 'ActivityType', activityId);
+  const q = query(
+    collection(db, 'Record'),
+    where('userId', '==', userId),
+    where('activityType', '==', activityTypeRef),
+    where('date', '>=', startDate),
+    where('date', '<=', endDate)
+  );
+  try {
+    const SnapshotRecords = await getDocs(q);
+    const newRecords: Array<any> = [];
+
+    SnapshotRecords.forEach(doc => {
+      const { activityType, date, quantity, note } = doc.data();
+      newRecords.push({
+        id: doc.id,
+        activity: activityType,
+        date,
+        quantity,
+        note,
+        userId,
+      });
+    });
+
+    const newRecordPromises = newRecords.map(async record => {
+      const fetchActivity = await getDoc(record.activity);
+      return {
+        ...record,
+        activity: getActivityWithId(fetchActivity),
+      };
+    });
+
+    return Promise.all(newRecordPromises);
+  } catch (error) {
+    console.log('\x1b[36m$$$  error:', error);
+  }
 };

@@ -2,9 +2,11 @@ import { RecordType } from '@/constants/Types';
 import { useRecords } from '@/hooks/useRecords';
 import { RecordsTable } from '@/components/RecordsTable';
 import { ActivitySpinner } from '@/components/ActivitySpinner';
+import { useRouter } from 'expo-router';
 
 export default function LastScreen() {
   const { lastRecords } = useRecords();
+  const router = useRouter();
 
   if (lastRecords.isLoading) return <ActivitySpinner />;
 
@@ -12,9 +14,10 @@ export default function LastScreen() {
     <RecordsTable
       records={lastRecords.data}
       onPress={(element: RecordType) => {
-        // navigation.navigate('ActivityReport', {
-        //   activity: element.activity,
-        // });
+        router.push({
+          pathname: '/activityReport',
+          params: { activityId: element.activity.id },
+        });
       }}
     />
   );

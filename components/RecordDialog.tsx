@@ -22,9 +22,10 @@ interface Props {
     error: boolean;
   }>>,
   recordData?: RecordType | null
+  onSuccessCallback: () => void;
 }
 
-export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar, recordData }: Props) => {
+export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar, recordData, onSuccessCallback }: Props) => {
   const { user } = useAuth();
 
   const [number, setNumber] = useState("");
@@ -139,6 +140,7 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
           })
           setSnackBar({visible: true, message: 'New record added successfuly!', error: false})
         }
+        onSuccessCallback();
       }
     } catch (error) {
       setSnackBar({visible: true, message:'Oppp!, an error ocurred', error: true});

@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
 import { TabBarIcon } from './navigation/TabBarIcon';
 
-export const Header = () => {
+export const Header = ({ options }: { options: any }) => {
   const { signout, user } = useAuth();
   const router = useRouter();
   const [visible, setVisible] = React.useState(false);
@@ -46,7 +46,7 @@ export const Header = () => {
           <Menu.Item icon='logout' onPress={signOut} title='Sign out' />
         </Menu>
       </View>
-      <Appbar.Content title="Test2" />
+      <Appbar.Content title={options.title} />
       <Pressable
         onPress={signOut}
         style={({ pressed }) => ({

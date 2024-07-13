@@ -12,11 +12,12 @@ import {
 } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
+import 'react-native-reanimated';
+import { Colors } from '@/constants/Colors';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-import "react-native-reanimated"
 
 const lightTheme = {
   ...DefaultTheme,
@@ -34,7 +35,7 @@ const darkTheme = {
   },
 };
 
-export default function RootLayout() {  
+export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -58,7 +59,33 @@ export default function RootLayout() {
         <ProvideRecords>
           <SafeAreaProvider>
             <PaperProvider theme={theme}>
-              <Stack screenOptions={{ headerShown: false }} />
+              <Stack>
+                <Stack.Screen
+                  name='tabs'
+                  options={{ headerShown: false, headerTitle: 'Historical' }}
+                />
+                <Stack.Screen
+                  name='authentication'
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name='activityReport/index'
+                  options={{
+                    headerTitle: 'Activity Report',
+                    headerStyle: {
+                      backgroundColor:
+                        Colors[colorScheme ?? 'light'].backgroundItem,
+                    },
+                    headerTitleStyle: {
+                      color: Colors[colorScheme ?? 'light'].text,
+                    },
+                    contentStyle: {
+                      backgroundColor:
+                        Colors[colorScheme ?? 'light'].background,
+                    },
+                  }}
+                />
+              </Stack>
             </PaperProvider>
           </SafeAreaProvider>
         </ProvideRecords>

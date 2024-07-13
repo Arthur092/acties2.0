@@ -17,7 +17,7 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: Colors[colorScheme ?? 'light'].background,
         },
-        header: () => <Header />,       
+        header: (props) => <Header {...props} />,       
       }}
       sceneContainerStyle = {{
         backgroundColor: Colors[colorScheme ?? 'light'].background,        

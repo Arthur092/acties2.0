@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Divider, List, Snackbar } from 'react-native-paper';
 import { ActivityType } from '../constants/Types';
 import { theme as coreTheme } from '../core/theme';
@@ -43,33 +43,35 @@ export const ActivitiesList = ({
   });
   return (
     <>
-      <List.Section>
-        {activityTypesWithoutDates
-          .concat(activityTypesWithDates)
-          .map((activity, index) => (
-            <View key={index}>
-              <Divider style={{ backgroundColor: divider }} />
-              <List.Item
-                testID={`list-${index}`}
-                title={activity.name}
-                left={() => (
-                  <List.Icon
-                    icon={activity.iconName}
-                    color={activity.iconColor}
-                  />
-                )}
-                right={() => <List.Icon icon={icon} />}
-                onPress={() => showDialog(true, activity)}
-                style={{
-                  backgroundColor: backgroundItem,
-                  paddingLeft: 30,
-                  paddingRight: 30,
-                }}
-              />
-            </View>
-          ))}
-        <Divider style={{ backgroundColor: divider }} />
-      </List.Section>
+      <ScrollView>
+        <List.Section>
+          {activityTypesWithoutDates
+            .concat(activityTypesWithDates)
+            .map((activity, index) => (
+              <View key={index}>
+                <Divider style={{ backgroundColor: divider }} />
+                <List.Item
+                  testID={`list-${index}`}
+                  title={activity.name}
+                  left={() => (
+                    <List.Icon
+                      icon={activity.iconName}
+                      color={activity.iconColor}
+                    />
+                  )}
+                  right={() => <List.Icon icon={icon} />}
+                  onPress={() => showDialog(true, activity)}
+                  style={{
+                    backgroundColor: backgroundItem,
+                    paddingLeft: 30,
+                    paddingRight: 30,
+                  }}
+                />
+              </View>
+            ))}
+          <Divider style={{ backgroundColor: divider }} />
+        </List.Section>
+      </ScrollView>
       <Snackbar
         visible={snackBar.visible}
         onDismiss={() => setSnackBar({ ...snackBar, visible: false })}

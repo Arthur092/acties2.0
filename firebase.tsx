@@ -47,8 +47,9 @@ export const db = initializeFirestore(app, {
 });
 
 // Get ActivityType by ID
-export const getActivityTypeById = (id: string) => {
-  return getDoc(doc(db, 'ActivityType', id));
+export const getActivityTypeById = async (id: string) => {
+  const fetchedActivity = await getDoc(doc(db, 'ActivityType', id));
+  return getActivityWithId(fetchedActivity);
 };
 
 // Create ActivityType
@@ -75,8 +76,17 @@ export const getActivityTypesByUser = async (userId: string) => {
   const SnapshotActivityTypes = await getDocs(q);
   const newActivityTypes: Array<ActivityType> = [];
   SnapshotActivityTypes.forEach(doc => {
-    const { name, isQuantity, iconName, iconColor, userId, isNote, addedAt } =
-      doc.data();
+    const {
+      name,
+      isQuantity,
+      iconName,
+      iconColor,
+      userId,
+      isNote,
+      addedAt,
+      currency,
+      monthDay,
+    } = doc.data();
     newActivityTypes.push({
       id: doc.id,
       name,
@@ -85,6 +95,8 @@ export const getActivityTypesByUser = async (userId: string) => {
       iconColor,
       userId,
       isNote,
+      currency,
+      monthDay,
       addedAt,
     });
   });
@@ -117,9 +129,16 @@ export const deleteRecord = (data: RecordType) => {
 };
 
 // Get Records by a specific user and activity
-export const getRecordsByUserAndActivity = async (userId: string, activityId: string) => {
+export const getRecordsByUserAndActivity = async (
+  userId: string,
+  activityId: string
+) => {
   const activityRef = doc(db, 'ActivityType', activityId);
-  const q = query(collection(db, 'Record'), where('userId', '==', userId), where('activityType', '==', activityRef));
+  const q = query(
+    collection(db, 'Record'),
+    where('userId', '==', userId),
+    where('activityType', '==', activityRef)
+  );
   const snapshotRecords = await getDocs(q);
   const records = snapshotRecords.docs.map(doc => {
     const { date, quantity, note } = doc.data();

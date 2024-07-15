@@ -1,9 +1,11 @@
 import React from 'react';
-import { Appbar, Menu } from 'react-native-paper';
+import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { Pressable, View } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
 import { TabBarIcon } from './navigation/TabBarIcon';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
 
 export const Header = ({ options }: { options: any }) => {
   const { signout, user } = useAuth();
@@ -11,9 +13,11 @@ export const Header = ({ options }: { options: any }) => {
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const colorScheme = useColorScheme();
 
   const signOut = async () => {
     try {
+      closeMenu();
       await signout();
       router.navigate('/');
     } catch (error) {
@@ -22,12 +26,12 @@ export const Header = ({ options }: { options: any }) => {
   };
 
   const goToActivities = () => {
-    // router.navigate('ActivitiesScreen');
+    router.navigate('/activities');
     closeMenu();
   };
 
   return (
-    <Appbar.Header>
+    <Appbar.Header style={{ backgroundColor: Colors[colorScheme ?? 'light'].header, }}>
       <View style={{ zIndex: 100 }}>
         <Menu
           visible={visible}
@@ -46,7 +50,7 @@ export const Header = ({ options }: { options: any }) => {
           <Menu.Item icon='logout' onPress={signOut} title='Sign out' />
         </Menu>
       </View>
-      <Appbar.Content title={options.title} />
+      <Appbar.Content color='white' title={options.title} />
       <Pressable
         onPress={signOut}
         style={({ pressed }) => ({

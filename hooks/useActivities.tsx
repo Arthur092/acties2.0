@@ -17,7 +17,7 @@ type ActivityTypesState = {
 export const ActivitiesContext = createContext<ContextValue>({
     activityTypes: {
         data: [],
-        isLoading: true
+        isLoading: false
     },
     getActivityTypes: () => null,
 });
@@ -81,6 +81,11 @@ function useProvideActivities(): ContextValue {
     }, []);
 
     const getActivityTypes = () => {
+        setActivityTypes({
+            data: [],
+            isLoading: true
+        })
+        
         if (user) {
             const { uid } = user;
             return getActivityTypesByUser(uid).then(newActivityTypes => {

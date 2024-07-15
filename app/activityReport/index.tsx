@@ -78,7 +78,7 @@ export default function ActivityReport() {
   useEffect(() => {
     const getActivity = async () => {
       const fetchedActivity = await getActivityTypeById(activityId as string);
-      const fetchedActivityData = fetchedActivity.data() as ActivityType;
+      const fetchedActivityData = fetchedActivity;
       setActivity(fetchedActivityData);
       fetchMonthlyRecords(undefined, fetchedActivityData);
     };
@@ -124,9 +124,7 @@ export default function ActivityReport() {
         .date(activity.monthDay!);
       fetchMonthlyRecords(currentMonthDay.toDate());
     } else {
-      console.log('\x1b[36m$$$  newMonthDate:', newMonthDate);
       const currentMonthDay = moment(newMonthDate).endOf('day').date(0);
-      console.log('\x1b[36m$$$  currentMonthDay:', currentMonthDay);
       fetchMonthlyRecords(currentMonthDay.toDate());
     }
     setMonthlyViewDate(newMonthDate.toDate());

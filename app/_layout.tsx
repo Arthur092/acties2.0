@@ -51,6 +51,19 @@ export default function RootLayout() {
     return null;
   }
 
+  const themeOptions = {
+    headerTitle: 'Activity Report',
+    headerStyle: {
+      backgroundColor: Colors[colorScheme ?? 'light'].background,
+    },
+    headerTitleStyle: {
+      color: Colors[colorScheme ?? 'light'].text,
+    },
+    contentStyle: {
+      backgroundColor: Colors[colorScheme ?? 'light'].background,
+    },
+  };
+
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   return (
@@ -69,22 +82,20 @@ export default function RootLayout() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                  name='activityReport/index'
+                  name='index'
                   options={{
-                    headerTitle: 'Activity Report',
-                    headerStyle: {
-                      backgroundColor:
-                        Colors[colorScheme ?? 'light'].backgroundItem,
-                    },
-                    headerTitleStyle: {
-                      color: Colors[colorScheme ?? 'light'].text,
-                    },
+                    headerShown: false,
                     contentStyle: {
                       backgroundColor:
                         Colors[colorScheme ?? 'light'].background,
                     },
                   }}
                 />
+                <Stack.Screen
+                  name='activityReport/index'
+                  options={themeOptions}
+                />
+                <Stack.Screen name='activities/index' options={themeOptions} />
               </Stack>
             </PaperProvider>
           </SafeAreaProvider>

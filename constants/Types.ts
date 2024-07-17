@@ -9,6 +9,7 @@ export type ActivityType = {
   userId?: string | null;
   monthDay?: number;
   isNote?: boolean;
+  isFullView?: boolean;
   currency?: string;
   addedAt?: Date | Timestamp;
 };

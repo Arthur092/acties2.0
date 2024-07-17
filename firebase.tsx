@@ -26,18 +26,18 @@ const prodConfig = {
   appId: '1:606075828354:web:2262a0bd4c88eca1f31c9b',
 };
 
-const devConfig = {
-  apiKey: 'AIzaSyB9xMhcbdoYlV9MMF4RtnIdch8mYsa3MRg',
-  authDomain: 'acties-dev.firebaseapp.com',
-  projectId: 'acties-dev',
-  storageBucket: 'acties-dev.appspot.com',
-  messagingSenderId: '481435189705',
-  appId: '1:481435189705:web:6e086abbf7fc59316ba818',
-};
+// const devConfig = {
+//   apiKey: 'AIzaSyB9xMhcbdoYlV9MMF4RtnIdch8mYsa3MRg',
+//   authDomain: 'acties-dev.firebaseapp.com',
+//   projectId: 'acties-dev',
+//   storageBucket: 'acties-dev.appspot.com',
+//   messagingSenderId: '481435189705',
+//   appId: '1:481435189705:web:6e086abbf7fc59316ba818',
+// };
 
 // web app's Firebase configuration
 const firebaseConfig = {
-  ...devConfig,
+  ...prodConfig,
 };
 
 // Initialize Firebase
@@ -137,7 +137,8 @@ export const getRecordsByUserAndActivity = async (
   const q = query(
     collection(db, 'Record'),
     where('userId', '==', userId),
-    where('activityType', '==', activityRef)
+    where('activityType', '==', activityRef),
+    orderBy('date', 'desc')
   );
   const snapshotRecords = await getDocs(q);
   const records = snapshotRecords.docs.map(doc => {
@@ -226,7 +227,8 @@ export const getMonthlyRecordsByUser = async (
     where('userId', '==', userId),
     where('activityType', '==', activityTypeRef),
     where('date', '>=', startDate),
-    where('date', '<=', endDate)
+    where('date', '<=', endDate),
+    orderBy('date', 'desc')
   );
   try {
     const SnapshotRecords = await getDocs(q);

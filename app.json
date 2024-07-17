@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "acties2-0",
+    "name": "Acties",
     "slug": "acties2-0",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,9 +18,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.arthur092.acties20"
     },
     "web": {
       "bundler": "metro",

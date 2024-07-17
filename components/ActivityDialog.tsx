@@ -64,6 +64,9 @@ export const ActivityDialog = ({
   //isNotes
   const [isNote, setIsNote] = useState(false);
 
+  //is fullView
+  const [isFullView, setIsFullView] = useState(false);
+
   //isNumber
   const [isQuantity, setIsQuantity] = useState(false);
 
@@ -130,6 +133,7 @@ export const ActivityDialog = ({
     setCurrency('');
     setIsQuantity(false);
     setIsNote(false);
+    setIsFullView(false);
     showDialog(false);
     setErrors({});
   };
@@ -142,6 +146,7 @@ export const ActivityDialog = ({
       setIconColor(activity.iconColor);
       setIsQuantity(activity.isQuantity);
       setIsNote(activity.isNote ?? false);
+      setIsFullView(activity.isFullView ?? false);
       setCurrency(activity.currency ?? '');
     }
   };
@@ -189,6 +194,7 @@ export const ActivityDialog = ({
         iconColor,
         isQuantity,
         isNote,
+        isFullView,
         userId: user!.uid,
         currency,
       };
@@ -251,8 +257,7 @@ export const ActivityDialog = ({
                   value={name}
                   onChangeText={onChangeName}
                   placeholder='eg. Supermarket'
-                  mode='outlined'
-                  autoComplete={false}
+                  mode='outlined'                  
                   error={errors['name'] ? true : false}
                 />
                 {errors['name'] ? (
@@ -361,14 +366,28 @@ export const ActivityDialog = ({
                     onValueChange={() => setIsNote(!isNote)}
                   />
                 </View>
+                <View style={styles.input}>
+                  <Text
+                    style={{
+                      paddingBottom: 5,
+                      color: colors.onSurface,
+                      fontSize: 15,
+                    }}
+                  >
+                    Enable Default Regular View
+                  </Text>
+                  <Switch
+                    value={isFullView}
+                    onValueChange={() => setIsFullView(!isFullView)}
+                  />
+                </View>
                 <TextInput
                   testID='input-day'
                   label='Day of month'
                   value={monthDay}
                   onChangeText={onChangedMonthDay}
                   placeholder='eg. 1'
-                  mode='outlined'
-                  autoComplete={false}
+                  mode='outlined'                  
                   error={errors['monthDay'] ? true : false}
                 />
                 <TextInput
@@ -378,7 +397,6 @@ export const ActivityDialog = ({
                   onChangeText={setCurrency}
                   placeholder='eg. L.'
                   mode='outlined'
-                  autoComplete={false}
                 />
                 {errors['monthDay'] ? (
                   <Text testID='input-qty-error' style={styles.error}>

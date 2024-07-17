@@ -175,7 +175,6 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
                   onChangeText={onChangedNumber}
                   placeholder='eg. 500'
                   mode='outlined'
-                  autoComplete={false}
                   error={errors['number'] ? true : false}
                 />
               )
@@ -192,7 +191,6 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
                   numberOfLines={4}
                   keyboardType="default"
                   style={{minHeight: 100}}
-                  autoComplete={false}
                   error={errors['note'] ? true : false}
                 />
               )
@@ -205,7 +203,6 @@ export const RecordDialog = ({ visible, showDialog, currentActivity, setSnackBar
               mode='outlined'
               disabled={true}
               style={styles.input}
-              autoComplete={false}
             />
             <Button onPress={() => setOpenDate(true)} uppercase={false} mode="outlined">
                Change Date

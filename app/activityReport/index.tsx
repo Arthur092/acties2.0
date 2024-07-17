@@ -59,31 +59,33 @@ export default function ActivityReport() {
         new Date(nextMonthDay)
       );
     } else {
-      getMonthlyRecords(
-        activityId as string,
-        new Date(
-          currentMonthDate.getFullYear(),
-          currentMonthDate.getMonth(),
-          1
-        ),
-        new Date(
-          currentMonthDate.getFullYear(),
-          currentMonthDate.getMonth() + 1,
-          0
-        )
+      const startOfMOnth = new Date(
+        currentMonthDate.getFullYear(),
+        currentMonthDate.getMonth(),
+        1
       );
+      const endOfMonth = new Date(
+        currentMonthDate.getFullYear(),
+        currentMonthDate.getMonth() + 1,
+        0
+      );
+      getMonthlyRecords(activityId as string, startOfMOnth, endOfMonth);
     }
   };
 
   useEffect(() => {
     const getActivity = async () => {
       const fetchedActivity = await getActivityTypeById(activityId as string);
-      const fetchedActivityData = fetchedActivity;
-      setActivity(fetchedActivityData);
-      fetchMonthlyRecords(undefined, fetchedActivityData);
+      setActivity(fetchedActivity);
+      if (activity?.isFullView) {
+        getRecordsByActivity(activityId as string);
+        setMonthlyViewDate(null);
+      } else {
+        fetchMonthlyRecords(undefined, fetchedActivity);
+        setMonthlyViewDate(new Date());
+      }
     };
     getActivity();
-    setMonthlyViewDate(new Date());
   }, []);
 
   if (!activity || monthlyRecords.isLoading || recordsByActivity.isLoading) {
@@ -102,13 +104,12 @@ export default function ActivityReport() {
 
   const onRegularView = () => {
     setMonthlyViewDate(null);
-    // TODO when implementing actvity initial load, we need to remove the get records when initial load is all records
     getRecordsByActivity(activityId as string);
   };
 
   const onMontlyView = () => {
-    // TODO when implementing actvity initial load, we need to load monthly when first load is onRegular
     setMonthlyViewDate(new Date());
+    fetchMonthlyRecords();
   };
 
   const onChangeMonth = (direction: 'prev' | 'next') => {
@@ -124,8 +125,8 @@ export default function ActivityReport() {
         .date(activity.monthDay!);
       fetchMonthlyRecords(currentMonthDay.toDate());
     } else {
-      const currentMonthDay = moment(newMonthDate).endOf('day').date(0);
-      fetchMonthlyRecords(currentMonthDay.toDate());
+      const currentMonthDay = new Date(newMonthDate.toDate());
+      fetchMonthlyRecords(currentMonthDay);
     }
     setMonthlyViewDate(newMonthDate.toDate());
   };
